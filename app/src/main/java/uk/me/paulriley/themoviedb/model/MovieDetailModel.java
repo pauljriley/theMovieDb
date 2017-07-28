@@ -3,7 +3,7 @@ package uk.me.paulriley.themoviedb.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FilmListModel implements Serializable {
+public class MovieDetailModel implements Serializable {
     private int vote_count;
     private int id;
     private boolean video;
@@ -18,7 +18,6 @@ public class FilmListModel implements Serializable {
     private boolean adult;
     private String overview;
     private String release_date;
-
 
     public int getVoteCount() {
         return vote_count;

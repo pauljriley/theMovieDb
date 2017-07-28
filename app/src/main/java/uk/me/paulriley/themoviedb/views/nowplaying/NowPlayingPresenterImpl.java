@@ -6,14 +6,14 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import uk.me.paulriley.themoviedb.model.FilmListModel;
+import uk.me.paulriley.themoviedb.model.MovieListModel;
 import uk.me.paulriley.themoviedb.service.TheMovieDbService;
 
 import static android.content.ContentValues.TAG;
 
 class NowPlayingPresenterImpl implements NowPlayingPresenter {
     private NowPlayingView mActivity;
-    private TheMovieDbService mTheMovieDBService;
+    private TheMovieDbService mTheMovieDBService = new TheMovieDbService(NowPlayingActivity.BASE_URL);
 
     @Override
     public void initialise(NowPlayingView nowPlayingView) {
@@ -22,7 +22,7 @@ class NowPlayingPresenterImpl implements NowPlayingPresenter {
 
     @Override
     public void onViewResumed() {
-        Flowable<FilmListModel> mFilmListObservable = mTheMovieDBService.getNowPlaying("");
+        Flowable<MovieListModel> mFilmListObservable = mTheMovieDBService.getNowPlaying("");
 
         mFilmListObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -36,11 +36,11 @@ class NowPlayingPresenterImpl implements NowPlayingPresenter {
 
     }
 
-    private class ShowNowPlayingModelAction implements Consumer<FilmListModel> {
+    private class ShowNowPlayingModelAction implements Consumer<MovieListModel> {
         @Override
-        public void accept(FilmListModel filmsListModel) throws Exception {
+        public void accept(MovieListModel movieListModel) throws Exception {
             if (mActivity != null) {
-                mActivity.showNowPlaying(filmsListModel);
+                mActivity.showNowPlaying(movieListModel);
             }
         }
     }

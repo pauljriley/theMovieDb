@@ -1,27 +1,29 @@
 package uk.me.paulriley.themoviedb.views.nowplaying;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import uk.me.paulriley.themoviedb.NowPlayingPresenter;
-import uk.me.paulriley.themoviedb.NowPlayingPresenterImpl;
-import uk.me.paulriley.themoviedb.NowPlayingView;
 import uk.me.paulriley.themoviedb.R;
-import uk.me.paulriley.themoviedb.model.FilmListModel;
+import uk.me.paulriley.themoviedb.model.MovieDetailModel;
+import uk.me.paulriley.themoviedb.model.MovieListModel;
 
 public class NowPlayingActivity extends AppCompatActivity implements NowPlayingView {
+    static final String BASE_URL = "https://api.themoviedb.org/3/";
 
     private NowPlayingPresenter mPresenter;
-    private LinearLayoutManager mLayoutManager;
+    private NowPlayingAdapter mNowPlayingAdapter;
 
     @BindView(R.id.now_playing_list)
     RecyclerView mFilmList;
 
     public NowPlayingActivity() {
+        mNowPlayingAdapter = new NowPlayingAdapter(this);
         mPresenter = new NowPlayingPresenterImpl();
     }
 
@@ -37,8 +39,10 @@ public class NowPlayingActivity extends AppCompatActivity implements NowPlayingV
     }
 
     private void initialiseRecyclerView() {
-        mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
         mFilmList.setLayoutManager(mLayoutManager);
+        mFilmList.setAdapter(mNowPlayingAdapter);
     }
 
     @Override
@@ -54,7 +58,11 @@ public class NowPlayingActivity extends AppCompatActivity implements NowPlayingV
     }
 
     @Override
-    public void showNowPlaying(FilmListModel filmsListModel) {
+    public void showNowPlaying(MovieListModel movieListModel) {
+        ArrayList<MovieDetailModel> movieList = movieListModel.getResults();
 
+        if (movieList != null && movieList.size() > 0) {
+            mNowPlayingAdapter.addNewItems(movieList);
+        }
     }
 }
